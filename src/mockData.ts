@@ -7,7 +7,7 @@ export interface Asset {
   marketCap: number;
   volume24h: number;
   color: string;
-  sparkline: { time: string; value: number }[];
+  sparkline: { time: string; value: number; open: number; high: number; low: number; close: number; }[];
   trend?: 'RANDOM' | 'PUMP' | 'DUMP' | 'STABLE';
 }
 
@@ -27,7 +27,19 @@ export const MOCK_ASSETS: Asset[] = [
     marketCap: 0,
     volume24h: 6000000000,
     color: '#3B82F6',
-    sparkline: Array.from({ length: 40 }, (_, i) => ({ time: i.toString(), value: 1.08 + Math.random() * 0.01 }))
+    sparkline: Array.from({ length: 40 }, (_, i) => {
+      const base = 1.08 + Math.random() * 0.01;
+      const open = base + (Math.random() - 0.5) * 0.002;
+      const close = base + (Math.random() - 0.5) * 0.002;
+      return { 
+        time: i.toString(), 
+        value: close,
+        open,
+        close,
+        high: Math.max(open, close) + Math.random() * 0.001,
+        low: Math.min(open, close) - Math.random() * 0.001
+      };
+    })
   },
   {
     id: 'gbpjusd',
@@ -38,7 +50,19 @@ export const MOCK_ASSETS: Asset[] = [
     marketCap: 0,
     volume24h: 4000000000,
     color: '#10B981',
-    sparkline: Array.from({ length: 40 }, (_, i) => ({ time: i.toString(), value: 1.26 + Math.random() * 0.01 }))
+    sparkline: Array.from({ length: 40 }, (_, i) => {
+      const base = 1.26 + Math.random() * 0.01;
+      const open = base + (Math.random() - 0.5) * 0.002;
+      const close = base + (Math.random() - 0.5) * 0.002;
+      return { 
+        time: i.toString(), 
+        value: close,
+        open,
+        close,
+        high: Math.max(open, close) + Math.random() * 0.001,
+        low: Math.min(open, close) - Math.random() * 0.001
+      };
+    })
   },
   {
     id: 'usdjpy',
@@ -49,7 +73,19 @@ export const MOCK_ASSETS: Asset[] = [
     marketCap: 0,
     volume24h: 5000000000,
     color: '#F43F5E',
-    sparkline: Array.from({ length: 40 }, (_, i) => ({ time: i.toString(), value: 150 + Math.random() * 2 }))
+    sparkline: Array.from({ length: 40 }, (_, i) => {
+      const base = 150 + Math.random() * 2;
+      const open = base + (Math.random() - 0.5) * 0.5;
+      const close = base + (Math.random() - 0.5) * 0.5;
+      return { 
+        time: i.toString(), 
+        value: close,
+        open,
+        close,
+        high: Math.max(open, close) + Math.random() * 0.2,
+        low: Math.min(open, close) - Math.random() * 0.2
+      };
+    })
   },
   {
     id: 'xauusd',
@@ -60,7 +96,19 @@ export const MOCK_ASSETS: Asset[] = [
     marketCap: 0,
     volume24h: 8000000000,
     color: '#EAB308',
-    sparkline: Array.from({ length: 40 }, (_, i) => ({ time: i.toString(), value: 2300 + Math.random() * 60 }))
+    sparkline: Array.from({ length: 40 }, (_, i) => {
+      const base = 2300 + Math.random() * 60;
+      const open = base + (Math.random() - 0.5) * 5;
+      const close = base + (Math.random() - 0.5) * 5;
+      return { 
+        time: i.toString(), 
+        value: close,
+        open,
+        close,
+        high: Math.max(open, close) + Math.random() * 2,
+        low: Math.min(open, close) - Math.random() * 2
+      };
+    })
   },
   {
     id: 'btcusd',
@@ -71,7 +119,19 @@ export const MOCK_ASSETS: Asset[] = [
     marketCap: 0,
     volume24h: 35000000000,
     color: '#F97316',
-    sparkline: Array.from({ length: 40 }, (_, i) => ({ time: i.toString(), value: 62000 + Math.random() * 4000 }))
+    sparkline: Array.from({ length: 40 }, (_, i) => {
+      const base = 62000 + Math.random() * 4000;
+      const open = base + (Math.random() - 0.5) * 200;
+      const close = base + (Math.random() - 0.5) * 200;
+      return { 
+        time: i.toString(), 
+        value: close,
+        open,
+        close,
+        high: Math.max(open, close) + Math.random() * 100,
+        low: Math.min(open, close) - Math.random() * 100
+      };
+    })
   }
 ];
 
@@ -88,6 +148,7 @@ export interface Trade {
 }
 
 export const MOCK_USER = {
+  id: 'u1',
   name: 'Alex Rivera',
   avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=128&h=128&fit=crop&crop=faces',
   balance: 10450.75,
@@ -96,6 +157,7 @@ export const MOCK_USER = {
   freeMargin: 9250.75,
   marginLevel: 850,
   isAdmin: true,
+  cards: [] as { id: string; brand: string; last4: string; expiry: string; }[],
   portfolio: [
     { assetId: 'eurusd', amount: 10.5, avgPrice: 1.0820 },
     { assetId: 'xauusd', amount: 0.5, avgPrice: 2310.00 },
@@ -109,7 +171,7 @@ export const MOCK_USER = {
 };
 
 export const MOCK_PLATFORM_USERS = [
-  { id: 'u1', name: 'Alex Rivera', email: 'alex@zenith.trade', balance: 10450.75, status: 'Active', verified: true, joined: '2024-01-12' },
+  { id: 'u1', name: 'Alex Rivera', email: 'alex@apex.financial', balance: 10450.75, status: 'Active', verified: true, joined: '2024-01-12' },
   { id: 'u2', name: 'Sarah Jenkins', email: 'sarah.j@gmail.com', balance: 42500.00, status: 'Active', verified: true, joined: '2024-02-05' },
   { id: 'u3', name: 'Michael Chen', email: 'm.chen@outlook.com', balance: 1200.50, status: 'Pending', verified: false, joined: '2024-04-18' },
   { id: 'u4', name: 'Elena Rodriguez', email: 'elena.rod@yahoo.com', balance: 8900.25, status: 'Active', verified: true, joined: '2023-11-30' },
