@@ -12,6 +12,7 @@ export default function AuthPage({ onLogin }: { onLogin: (data: { name?: string,
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
   const [country, setCountry] = useState('');
 
@@ -20,12 +21,12 @@ export default function AuthPage({ onLogin }: { onLogin: (data: { name?: string,
     setLoading(true);
     try {
         if (!isLogin) {
-            const data = await ApiService.register(name, email, phone, country);
+            const data = await ApiService.register(name, email, password, phone, country);
             ApiService.setSession(data.sessionId);
             setTempUserData(data.user);
             setShowBonusPopup(true);
         } else {
-            const data = await ApiService.login(email);
+            const data = await ApiService.login(email, password);
             ApiService.setSession(data.sessionId);
             onLogin({ email: data.user.email, isRegistration: false, user: data.user });
         }
@@ -166,6 +167,8 @@ export default function AuthPage({ onLogin }: { onLogin: (data: { name?: string,
                   type="password" 
                   required 
                   placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="w-full bg-[var(--panel-bg)] border border-[var(--panel-border)] rounded-xl pl-11 pr-4 py-3.5 text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:ring-1 focus:ring-indigo-600 transition-all font-medium"
                 />
               </div>

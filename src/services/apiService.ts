@@ -20,21 +20,21 @@ export class ApiService {
     localStorage.removeItem("z_session_id");
   }
 
-  static async register(name: string, email: string, phone?: string, country?: string) {
+  static async register(name: string, email: string, password: string, phone?: string, country?: string) {
     const res = await fetch(`${API_BASE}/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, phone, country }),
+      body: JSON.stringify({ name, email, password, phone, country }),
     });
     if (!res.ok) throw new Error(await res.text());
     return res.json();
   }
 
-  static async login(email: string) {
+  static async login(email: string, password: string) {
     const res = await fetch(`${API_BASE}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ email, password }),
     });
     if (!res.ok) throw new Error(await res.text());
     return res.json();

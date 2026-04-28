@@ -22,8 +22,8 @@ async function startServer() {
 
   // Mock server-side state (in a real app, this would be a database)
   let serverUsers = [
-    { id: 'ADMIN_CHIEF', name: 'Alex Rivera', email: 'alex@apex.financial', balance: 10450.75, status: 'Active', verified: true, joined: '2024-01-12', isAdmin: true, cards: [{ id: 'c1', brand: 'Visa', last4: '8421', expiry: '12/26' }] },
-    { id: 'OPERATOR_0', name: 'System Admin', email: 'juddybanz@gmail.com', balance: 50000.00, status: 'Active', verified: true, joined: '2024-01-01', isAdmin: true, cards: [] },
+    { id: 'ADMIN_CHIEF', name: 'Alex Rivera', email: 'alex@apex.financial', password: 'password123', balance: 10450.75, status: 'Active', verified: true, joined: '2024-01-12', isAdmin: true, cards: [{ id: 'c1', brand: 'Visa', last4: '8421', expiry: '12/26' }] },
+    { id: 'OPERATOR_0', name: 'System Admin', email: 'juddybanz@gmail.com', password: 'password123', balance: 50000.00, status: 'Active', verified: true, joined: '2024-01-01', isAdmin: true, cards: [] },
   ];
 
   let serverAssets = [
@@ -105,8 +105,8 @@ async function startServer() {
   });
 
   app.post("/api/auth/register", (req, res) => {
-    const { name, email, phone, country } = req.body;
-    if (!name || !email) return res.status(400).json({ error: "Missing identity data" });
+    const { name, email, password, phone, country } = req.body;
+    if (!name || !email || !password) return res.status(400).json({ error: "Missing identity data" });
     
     // Check if user already exists
     if (serverUsers.find(u => u.email === email)) {
@@ -117,6 +117,7 @@ async function startServer() {
       id: 'u' + Date.now(),
       name,
       email,
+      password,
       phone: phone || 'N/A',
       country: country || 'N/A',
       balance: 0, // Starts at 0, claimed via bonus
@@ -151,8 +152,8 @@ async function startServer() {
   });
 
   app.post("/api/auth/login", (req, res) => {
-    const { email } = req.body;
-    const user = serverUsers.find(u => u.email === email);
+    const { email, password } = req.body;
+    const user = serverUsers.find(u => u.email === email && u.password === password);
     if (!user) return res.status(401).json({ error: "Invalid credentials" });
     
     const sessionId = Math.random().toString(36).substring(7);
