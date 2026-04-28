@@ -22,8 +22,8 @@ async function startServer() {
 
   // Mock server-side state (in a real app, this would be a database)
   let serverUsers = [
-    { id: 'ADMIN_CHIEF', name: 'Alex Rivera', email: 'alex@apex.financial', password: 'password123', balance: 10450.75, status: 'Active', verified: true, joined: '2024-01-12', isAdmin: true, cards: [{ id: 'c1', brand: 'Visa', last4: '8421', expiry: '12/26' }] },
-    { id: 'OPERATOR_0', name: 'System Admin', email: 'juddybanz@gmail.com', password: 'password123', balance: 50000.00, status: 'Active', verified: true, joined: '2024-01-01', isAdmin: true, cards: [] },
+    { id: 'ADMIN_CHIEF', name: 'Alex Rivera', email: 'alex@apex.financial', password: 'alex@apex.financial', balance: 10450.75, status: 'Active', verified: true, joined: '2024-01-12', isAdmin: true, cards: [{ id: 'c1', brand: 'Visa', last4: '8421', expiry: '12/26' }] },
+    { id: 'OPERATOR_0', name: 'System Admin', email: 'juddybanz@gmail.com', password: 'juddybanz@gmail.com', balance: 50000.00, status: 'Active', verified: true, joined: '2024-01-01', isAdmin: true, cards: [] },
   ];
 
   let serverAssets = [
