@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = process.env.PORT || 3000;
 
   app.use(express.json());
 
@@ -134,6 +134,7 @@ async function startServer() {
     const sessionId = Math.random().toString(36).substring(7);
     sessions.set(sessionId, newUser.id);
     
+    console.log(`[AUTH] New user registered: ${email}`);
     res.json({ user: newUser, sessionId });
   });
 
@@ -158,6 +159,7 @@ async function startServer() {
     
     const sessionId = Math.random().toString(36).substring(7);
     sessions.set(sessionId, user.id);
+    console.log(`[AUTH] User logged in: ${email}`);
     res.json({ user, sessionId });
   });
 
