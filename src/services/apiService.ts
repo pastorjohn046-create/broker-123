@@ -20,14 +20,27 @@ export class ApiService {
     localStorage.removeItem("z_session_id");
   }
 
+  private static async handleResponse(res: Response) {
+    if (!res.ok) {
+      let errorMessage = "Unknown error";
+      try {
+        const data = await res.json();
+        errorMessage = data.error || data.message || JSON.stringify(data);
+      } catch {
+        errorMessage = await res.text();
+      }
+      throw new Error(errorMessage);
+    }
+    return res.json();
+  }
+
   static async register(name: string, email: string, password: string, phone?: string, country?: string) {
     const res = await fetch(`${API_BASE}/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, password, phone, country }),
     });
-    if (!res.ok) throw new Error(await res.text());
-    return res.json();
+    return this.handleResponse(res);
   }
 
   static async login(email: string, password: string) {
@@ -36,8 +49,7 @@ export class ApiService {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
-    if (!res.ok) throw new Error(await res.text());
-    return res.json();
+    return this.handleResponse(res);
   }
 
   static async getAssets() {
@@ -95,7 +107,6 @@ export class ApiService {
       method: "POST",
       headers: this.headers
     });
-    if (!res.ok) throw new Error(await res.text());
-    return res.json();
+    return this.handleResponse(res);
   }
 }

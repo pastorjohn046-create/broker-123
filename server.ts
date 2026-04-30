@@ -108,15 +108,18 @@ async function startServer() {
     const { name, email, password, phone, country } = req.body;
     if (!name || !email || !password) return res.status(400).json({ error: "Missing identity data" });
     
+    const cleanEmail = email.trim().toLowerCase();
+
     // Check if user already exists
-    if (serverUsers.find(u => u.email === email)) {
-        return res.status(400).json({ error: "Terminal ID already commissioned" });
+    if (serverUsers.find(u => u.email.toLowerCase() === cleanEmail)) {
+        console.log(`[AUTH] Registration failed: Terminal ID ${cleanEmail} already commissioned`);
+        return res.status(400).json({ error: "This Terminal ID is already commissioned. Please use the 'Sign In' tab if you already have an account." });
     }
 
     const newUser = {
       id: 'u' + Date.now(),
       name,
-      email,
+      email: cleanEmail,
       password,
       phone: phone || 'N/A',
       country: country || 'N/A',
@@ -154,12 +157,13 @@ async function startServer() {
 
   app.post("/api/auth/login", (req, res) => {
     const { email, password } = req.body;
-    const user = serverUsers.find(u => u.email === email && u.password === password);
+    const cleanEmail = (email || '').trim().toLowerCase();
+    const user = serverUsers.find(u => u.email.toLowerCase() === cleanEmail && u.password === password);
     if (!user) return res.status(401).json({ error: "Invalid credentials" });
     
     const sessionId = Math.random().toString(36).substring(7);
     sessions.set(sessionId, user.id);
-    console.log(`[AUTH] User logged in: ${email}`);
+    console.log(`[AUTH] User logged in: ${cleanEmail}`);
     res.json({ user, sessionId });
   });
 

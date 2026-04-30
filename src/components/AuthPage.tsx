@@ -19,14 +19,15 @@ export default function AuthPage({ onLogin }: { onLogin: (data: { name?: string,
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    const cleanEmail = email.trim().toLowerCase();
     try {
         if (!isLogin) {
-            const data = await ApiService.register(name, email, password, phone, country);
+            const data = await ApiService.register(name, cleanEmail, password, phone, country);
             ApiService.setSession(data.sessionId);
             setTempUserData(data.user);
             setShowBonusPopup(true);
         } else {
-            const data = await ApiService.login(email, password);
+            const data = await ApiService.login(cleanEmail, password);
             ApiService.setSession(data.sessionId);
             onLogin({ email: data.user.email, isRegistration: false, user: data.user });
         }
