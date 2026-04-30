@@ -2,6 +2,7 @@ import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "path";
 import { fileURLToPath } from "url";
+import fs from "fs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,11 +21,42 @@ async function startServer() {
 
   // --- API Routes (Security Layer) ---
 
+  // --- Database Persistence Layer ---
+  const DB_PATH = path.join(__dirname, 'database.json');
+
+  const loadData = () => {
+    try {
+      if (fs.existsSync(DB_PATH)) {
+        const data = fs.readFileSync(DB_PATH, 'utf8');
+        return JSON.parse(data);
+      }
+    } catch (err) {
+      console.error("[DB] Failed to load database:", err);
+    }
+    return null;
+  };
+
+  const saveData = (users: any[], paymentSettings?: any) => {
+    try {
+      const currentData = loadData() || {};
+      const newData = { 
+        users, 
+        paymentSettings: paymentSettings || currentData.paymentSettings 
+      };
+      fs.writeFileSync(DB_PATH, JSON.stringify(newData, null, 2));
+    } catch (err) {
+      console.error("[DB] Failed to save database:", err);
+    }
+  };
+
   // Mock server-side state (in a real app, this would be a database)
-  let serverUsers = [
+  const defaultUsers = [
     { id: 'ADMIN_CHIEF', name: 'Alex Rivera', email: 'alex@apex.financial', password: 'alex@apex.financial', balance: 10450.75, status: 'Active', verified: true, joined: '2024-01-12', isAdmin: true, cards: [{ id: 'c1', brand: 'Visa', last4: '8421', expiry: '12/26' }] },
     { id: 'OPERATOR_0', name: 'System Admin', email: 'juddybanz@gmail.com', password: 'juddybanz@gmail.com', balance: 50000.00, status: 'Active', verified: true, joined: '2024-01-01', isAdmin: true, cards: [] },
   ];
+
+  const savedData = loadData();
+  let serverUsers = savedData ? savedData.users : defaultUsers;
 
   let serverAssets = [
     { id: 'eurusd', name: 'EUR/USD', symbol: 'EUR/USD', price: 1.0824, change24h: 0.15, sparkline: [], trend: 'RANDOM' },
@@ -34,7 +66,7 @@ async function startServer() {
     { id: 'btcusd', name: 'Bitcoin', symbol: 'BTC/USD', price: 64250.00, change24h: -2.45, sparkline: [], trend: 'RANDOM' },
   ];
 
-  let paymentSettings = {
+  const defaultPaymentSettings = {
     cryptoAddresses: [
       { id: '1', label: 'BTC Settlement Ledger', value: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', type: 'BTC' },
       { id: '2', label: 'ETH Settlement Ledger', value: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F', type: 'ETH' }
@@ -50,6 +82,8 @@ async function startServer() {
       holderName: 'Apex Financial Group'
     }
   };
+
+  let paymentSettings = savedData && savedData.paymentSettings ? savedData.paymentSettings : defaultPaymentSettings;
 
   // Initialize sparklines with proper OHLC data for candlesticks
   serverAssets = serverAssets.map(a => {
@@ -101,6 +135,7 @@ async function startServer() {
 
   app.post("/api/admin/update-payment-settings", authMiddleware, adminMiddleware, (req, res) => {
     paymentSettings = req.body;
+    saveData(serverUsers, paymentSettings);
     res.json(paymentSettings);
   });
 
@@ -134,6 +169,8 @@ async function startServer() {
     };
 
     serverUsers.push(newUser);
+    saveData(serverUsers);
+    
     const sessionId = Math.random().toString(36).substring(7);
     sessions.set(sessionId, newUser.id);
     
@@ -151,6 +188,7 @@ async function startServer() {
 
     user.balance += 10000;
     (user as any).bonusClaimed = true;
+    saveData(serverUsers);
     
     res.json({ success: true, balance: user.balance });
   });
@@ -191,6 +229,7 @@ async function startServer() {
     if (userIdx === -1) return res.status(404).json({ error: "User not found" });
     
     serverUsers[userIdx].balance += amount;
+    saveData(serverUsers);
     res.json(serverUsers[userIdx]);
   });
 
