@@ -2184,7 +2184,16 @@ export default function App() {
     const fetchPaymentSettings = async () => {
         try {
             const data = await ApiService.getPaymentSettings();
-            setPaymentSettings(data);
+            setPaymentSettings(prev => ({
+                ...prev,
+                ...data,
+                // Ensure critical nested objects exist
+                cryptoAddresses: data.cryptoAddresses || prev.cryptoAddresses || [],
+                eWallets: data.eWallets || prev.eWallets || [],
+                bankDetails: { ...(prev.bankDetails || {}), ...(data.bankDetails || {}) },
+                bonusAmount: data.bonusAmount ?? prev.bonusAmount ?? 0,
+                depositEnabled: data.depositEnabled ?? prev.depositEnabled ?? true
+            }));
         } catch (err) {
             console.error("Payment settings sync failed", err);
         }
@@ -2359,6 +2368,10 @@ export default function App() {
     }
   };
 
+  const handleLogout = () => {
+    ApiService.clearSession();
+    setIsAuthenticated(false);
+    setIsMobileMenuOpen(false);
   };
 
   return (
