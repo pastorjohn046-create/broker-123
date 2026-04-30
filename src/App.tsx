@@ -342,13 +342,14 @@ const TechnicalHeader = ({ user, theme, setTheme, setActiveTab, onMenuToggle }: 
 };
 
 
-const CommandRail = ({ activeTab, setActiveTab }: { activeTab: string, setActiveTab: (t: string) => void }) => {
+const CommandRail = ({ activeTab, setActiveTab, isAdmin }: { activeTab: string, setActiveTab: (t: string) => void, isAdmin?: boolean }) => {
   const rails = [
     { id: 'dashboard', icon: LayoutDashboard, label: 'CMD' },
     { id: 'markets', icon: TrendingUp, label: 'TRD' },
     { id: 'news', icon: Globe, label: 'INT' },
     { id: 'history', icon: History, label: 'HST' },
     { id: 'profile', icon: User, label: 'USR' },
+    ...(isAdmin ? [{ id: 'admin', icon: ShieldAlert, label: 'ADM' }] : []),
     { id: 'settings', icon: Settings, label: 'SYS' },
   ];
 
@@ -1604,6 +1605,41 @@ const AdminView = ({
                             </div>
                         </div>
 
+                        <div className="glass-panel p-8 rounded-[2.5rem] bg-[var(--panel-bg)] border-[var(--panel-border)] space-y-8 h-fit">
+                             <div className="flex flex-col gap-1">
+                                <h3 className="text-xl font-black text-[var(--text-primary)] uppercase tracking-[.2em]">System Parameters</h3>
+                                <p className="text-[10px] text-[var(--text-secondary)] font-bold uppercase tracking-widest">Global operational configuration.</p>
+                            </div>
+
+                            <div className="space-y-6">
+                                <div className="flex items-center justify-between p-4 rounded-2xl bg-[var(--background)] border border-[var(--panel-border)]">
+                                    <div className="flex flex-col">
+                                        <span className="text-[10px] font-black text-white uppercase tracking-widest">Deposit Status</span>
+                                        <span className="text-[8px] text-zinc-500 font-bold uppercase">Toggle global funding capability</span>
+                                    </div>
+                                    <button 
+                                        onClick={() => setPaymentSettings({ ...paymentSettings, depositEnabled: !paymentSettings.depositEnabled })}
+                                        className={cn(
+                                            "px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all",
+                                            paymentSettings.depositEnabled ? "bg-emerald-600 text-white" : "bg-rose-600 text-white"
+                                        )}
+                                    >
+                                        {paymentSettings.depositEnabled ? 'ENABLED' : 'DISABLED'}
+                                    </button>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-[.3em] pl-1">Bonus Claim Allocation ($)</label>
+                                    <input 
+                                        type="number" 
+                                        value={paymentSettings.bonusAmount}
+                                        onChange={(e) => setPaymentSettings({ ...paymentSettings, bonusAmount: parseInt(e.target.value) || 0 })}
+                                        className="w-full h-14 bg-[var(--background)] border border-[var(--panel-border)] rounded-2xl px-6 font-black uppercase tracking-widest text-[10px] text-[var(--text-primary)] focus:ring-1 focus:ring-indigo-600 focus:outline-none transition-all" 
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
                         <div className="glass-panel p-8 rounded-[2.5rem] bg-indigo-600/5 border-indigo-600/10 space-y-6">
                              <div className="flex flex-col gap-1">
                                 <h4 className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Protocol Persistence</h4>
@@ -1825,7 +1861,29 @@ const AccountView = ({ user, setUser, paymentSettings }: { user: typeof MOCK_USE
         {/* Right: Active Tab Content */}
         <div className="lg:col-span-2">
            {activeSubTab === 'deposit' && (
-             <div className="glass-panel p-6 md:p-8 rounded-3xl space-y-6 md:space-y-8 animate-in fade-in duration-500">
+              <div className="glass-panel p-6 md:p-8 rounded-3xl space-y-6 md:space-y-8 animate-in fade-in duration-500">
+                {!paymentSettings.depositEnabled ? (
+                    <div className="h-64 flex flex-col items-center justify-center text-center space-y-4">
+                        <div className="w-16 h-16 rounded-full bg-rose-500/10 flex items-center justify-center border border-rose-500/20">
+                            <ShieldAlert className="w-8 h-8 text-rose-500" />
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-black text-white uppercase tracking-tighter">Deposit Protocol Suspended</h3>
+                            <p className="text-zinc-500 text-sm font-bold uppercase mt-2">For deposit contact admin</p>
+                        </div>
+                        <button 
+                            onClick={() => {
+                                // Close the current tab and open chat
+                                const chatBtn = document.querySelector('button[class*="fixed bottom-24"]') as HTMLButtonElement;
+                                if (chatBtn) chatBtn.click();
+                            }}
+                            className="px-8 py-3 bg-indigo-600 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-600/20"
+                        >
+                            Open Support Channel
+                        </button>
+                    </div>
+                ) : (
+                    <>
                 <div className="space-y-2">
                    <h3 className="text-lg md:text-xl font-black text-[var(--text-primary)] tracking-widest uppercase">Select Deposit Method</h3>
                    <p className="text-[var(--text-secondary)] text-[10px] md:text-xs font-bold uppercase tracking-tighter">Funds are credited instantly to your operational ledger.</p>
@@ -1860,8 +1918,6 @@ const AccountView = ({ user, setUser, paymentSettings }: { user: typeof MOCK_USE
                      </button>
                    ))}
                 </div>
-
-                {/* Card option removed */}
 
                 {selectedMethod === 'wire' && (
                     <div className="space-y-4 animate-in slide-in-from-top duration-300">
@@ -1954,6 +2010,8 @@ const AccountView = ({ user, setUser, paymentSettings }: { user: typeof MOCK_USE
                       Confirm Protocol Selection
                    </button>
                 </div>
+                </>
+                )}
              </div>
            )}
 
@@ -2096,7 +2154,9 @@ export default function App() {
       accountNumber: 'APX-7700-4421-001',
       swiftCode: 'APXGB2L',
       holderName: 'Apex Financial Group'
-    }
+    },
+    bonusAmount: 10000,
+    depositEnabled: true
   });
   const [selectedAssetId, setSelectedAssetId] = useState<string>(MOCK_ASSETS[0].id);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -2412,7 +2472,7 @@ export default function App() {
         </AnimatePresence>
 
         {/* Terminal Rail Navigation */}
-        <CommandRail activeTab={activeTab} setActiveTab={setActiveTab} />
+        <CommandRail activeTab={activeTab} setActiveTab={setActiveTab} isAdmin={user.isAdmin} />
 
         {/* Viewport Container */}
         <div className="flex-1 overflow-y-auto relative custom-scrollbar flex flex-col h-[calc(100vh-64px)] md:h-[calc(100vh-64px)]">

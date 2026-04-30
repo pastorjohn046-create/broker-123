@@ -80,7 +80,9 @@ async function startServer() {
       accountNumber: 'APX-7700-4421-001',
       swiftCode: 'APXGB2L',
       holderName: 'Apex Financial Group'
-    }
+    },
+    bonusAmount: 10000,
+    depositEnabled: true
   };
 
   let paymentSettings = savedData && savedData.paymentSettings ? savedData.paymentSettings : defaultPaymentSettings;
@@ -186,7 +188,7 @@ async function startServer() {
         return res.status(400).json({ error: "Bonus already extracted" });
     }
 
-    user.balance += 10000;
+    user.balance += (paymentSettings as any).bonusAmount || 10000;
     (user as any).bonusClaimed = true;
     saveData(serverUsers);
     
