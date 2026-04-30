@@ -61,6 +61,7 @@ import {
 } from 'recharts';
 import { cn } from './lib/utils';
 import { MOCK_ASSETS, MOCK_USER, MOCK_PLATFORM_USERS, MOCK_PLATFORM_STATS, Asset, Trade } from './mockData';
+import AuthPage from './components/AuthPage';
 
 // Custom Candlestick Component for professional clear rendering
 const CandleStick = (props: any) => {
@@ -100,7 +101,7 @@ const CandleStick = (props: any) => {
     </g>
   );
 };
-import AuthPage from './components/AuthPage';
+
 
 // --- Shared Components ---
 
@@ -2358,11 +2359,9 @@ export default function App() {
     }
   };
 
-  const handleLogout = () => {
-    ApiService.clearSession();
-    setIsAuthenticated(false);
-    setIsMobileMenuOpen(false);
-  };  return (
+  };
+
+  return (
     <div className={cn(
       "min-h-screen flex flex-col transition-all duration-500 font-sans selection:bg-indigo-500/30",
       theme === 'light' ? 'light bg-white text-slate-900' : 'dark bg-[#020203] text-white'
