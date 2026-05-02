@@ -156,7 +156,7 @@ export const MOCK_USER = {
   margin: 0,
   freeMargin: 50000.00,
   marginLevel: 0,
-  isAdmin: false,
+  isAdmin: true,
   cards: [] as { id: string; brand: string; last4: string; expiry: string; }[],
   portfolio: [
     { assetId: 'eurusd', amount: 0, avgPrice: 0 },

@@ -2405,13 +2405,7 @@ export default function App() {
     try {
       // Use passed user if available, fallback to getMe
       const userData = data.user || await ApiService.getMe();
-      // Ensure server's isAdmin value is used (not MOCK_USER's default)
-      setUser({
-        ...MOCK_USER,
-        ...userData,
-        isAdmin: userData.isAdmin === true, // Force boolean from server
-        trades: userData.trades || []
-      });
+      setUser({ ...MOCK_USER, ...userData, trades: userData.trades || [] });
       setIsAuthenticated(true);
     } catch (err) {
       console.error("Auth sync failed", err);
@@ -2423,24 +2417,6 @@ export default function App() {
   }
 
   const renderView = () => {
-    // Security check: Only allow admin access for admin tab
-    if (activeTab === 'admin' && !user.isAdmin) {
-      return (
-        <div className="h-full flex items-center justify-center">
-          <div className="text-center space-y-4">
-            <ShieldAlert className="w-16 h-16 text-rose-500 mx-auto" />
-            <h2 className="text-2xl font-black text-[var(--text-primary)] uppercase tracking-widest">Access Denied</h2>
-            <p className="text-[var(--text-secondary)] text-sm font-bold uppercase">Administrative privileges required</p>
-            <button
-              onClick={() => setActiveTab('dashboard')}
-              className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-500 transition-all"
-            >
-              Return to Dashboard
-            </button>
-          </div>
-        </div>
-      );
-    }
     switch (activeTab) {
       case 'dashboard': return <DashboardView setActiveTab={setActiveTab} user={user} assets={assets} onCloseTrade={handleCloseTrade} />;
       case 'markets': return <MarketsView selectedAsset={selectedAsset} setSelectedAsset={(a) => setSelectedAssetId(a.id)} assets={assets} onPlaceTrade={handlePlaceTrade} user={user} />;
