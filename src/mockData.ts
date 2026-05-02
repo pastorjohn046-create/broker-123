@@ -31,8 +31,8 @@ export const MOCK_ASSETS: Asset[] = [
       const base = 1.08 + Math.random() * 0.01;
       const open = base + (Math.random() - 0.5) * 0.002;
       const close = base + (Math.random() - 0.5) * 0.002;
-      return { 
-        time: i.toString(), 
+      return {
+        time: i.toString(),
         value: close,
         open,
         close,
@@ -54,8 +54,8 @@ export const MOCK_ASSETS: Asset[] = [
       const base = 1.26 + Math.random() * 0.01;
       const open = base + (Math.random() - 0.5) * 0.002;
       const close = base + (Math.random() - 0.5) * 0.002;
-      return { 
-        time: i.toString(), 
+      return {
+        time: i.toString(),
         value: close,
         open,
         close,
@@ -77,8 +77,8 @@ export const MOCK_ASSETS: Asset[] = [
       const base = 150 + Math.random() * 2;
       const open = base + (Math.random() - 0.5) * 0.5;
       const close = base + (Math.random() - 0.5) * 0.5;
-      return { 
-        time: i.toString(), 
+      return {
+        time: i.toString(),
         value: close,
         open,
         close,
@@ -100,8 +100,8 @@ export const MOCK_ASSETS: Asset[] = [
       const base = 2300 + Math.random() * 60;
       const open = base + (Math.random() - 0.5) * 5;
       const close = base + (Math.random() - 0.5) * 5;
-      return { 
-        time: i.toString(), 
+      return {
+        time: i.toString(),
         value: close,
         open,
         close,
@@ -123,8 +123,8 @@ export const MOCK_ASSETS: Asset[] = [
       const base = 62000 + Math.random() * 4000;
       const open = base + (Math.random() - 0.5) * 200;
       const close = base + (Math.random() - 0.5) * 200;
-      return { 
-        time: i.toString(), 
+      return {
+        time: i.toString(),
         value: close,
         open,
         close,
@@ -156,7 +156,7 @@ export const MOCK_USER = {
   margin: 0,
   freeMargin: 50000.00,
   marginLevel: 0,
-  isAdmin: true,
+  isAdmin: false,
   cards: [] as { id: string; brand: string; last4: string; expiry: string; }[],
   portfolio: [
     { assetId: 'eurusd', amount: 0, avgPrice: 0 },
