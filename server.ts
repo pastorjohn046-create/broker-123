@@ -49,23 +49,14 @@ async function startServer() {
     }
   };
 
-  // Admin whitelist - only these emails can have admin privileges
-  const ADMIN_EMAIL = 'alex@apex.financial';
-
   // Mock server-side state (in a real app, this would be a database)
   const defaultUsers = [
-    { id: 'ADMIN_CHIEF', name: 'Alex Rivera', email: ADMIN_EMAIL, password: 'alex@apex.financial', balance: 10450.75, status: 'Active', verified: true, joined: '2024-01-12', isAdmin: true, cards: [{ id: 'c1', brand: 'Visa', last4: '8421', expiry: '12/26' }] },
-    { id: 'OPERATOR_0', name: 'System Operator', email: 'juddybanz@gmail.com', password: 'juddybanz@gmail.com', balance: 50000.00, status: 'Active', verified: true, joined: '2024-01-01', isAdmin: false, cards: [] },
+    { id: 'ADMIN_CHIEF', name: 'Alex Rivera', email: 'alex@apex.financial', password: 'alex@apex.financial', balance: 10450.75, status: 'Active', verified: true, joined: '2024-01-12', isAdmin: true, cards: [{ id: 'c1', brand: 'Visa', last4: '8421', expiry: '12/26' }] },
+    { id: 'OPERATOR_0', name: 'System Admin', email: 'juddybanz@gmail.com', password: 'juddybanz@gmail.com', balance: 50000.00, status: 'Active', verified: true, joined: '2024-01-01', isAdmin: true, cards: [] },
   ];
 
   const savedData = loadData();
   let serverUsers = savedData ? savedData.users : defaultUsers;
-
-  // Normalize admin status: ensure only whitelisted emails have admin access
-  serverUsers = serverUsers.map(user => ({
-    ...user,
-    isAdmin: user.email.toLowerCase() === ADMIN_EMAIL
-  }));
 
   let serverAssets = [
     { id: 'eurusd', name: 'EUR/USD', symbol: 'EUR/USD', price: 1.0824, change24h: 0.15, sparkline: [], trend: 'RANDOM' },
