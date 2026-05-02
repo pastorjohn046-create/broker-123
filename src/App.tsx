@@ -2405,7 +2405,13 @@ export default function App() {
     try {
       // Use passed user if available, fallback to getMe
       const userData = data.user || await ApiService.getMe();
-      setUser({ ...MOCK_USER, ...userData, trades: userData.trades || [] });
+      // Ensure server's isAdmin value is used (not MOCK_USER's default)
+      setUser({
+        ...MOCK_USER,
+        ...userData,
+        isAdmin: userData.isAdmin === true, // Force boolean from server
+        trades: userData.trades || []
+      });
       setIsAuthenticated(true);
     } catch (err) {
       console.error("Auth sync failed", err);
