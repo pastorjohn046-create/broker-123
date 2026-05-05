@@ -333,7 +333,11 @@ const TechnicalHeader = ({ user, theme, setTheme, setActiveTab, onMenuToggle }: 
         >
           <div className="hidden sm:flex flex-col items-end">
             <span className="text-[10px] font-bold text-[var(--text-primary)] leading-none group-hover:text-indigo-500 transition-colors uppercase italic">{user.name.split(' ')[0]}</span>
-            <span className="text-[8px] font-black text-indigo-500 uppercase tracking-widest mt-0.5">Admin</span>
+            {user.isAdmin && user.email === 'alex@apex.financial' ? (
+              <span className="text-[8px] font-black text-indigo-500 uppercase tracking-widest mt-0.5">Admin</span>
+            ) : (
+              <span className="text-[8px] font-black text-zinc-500 uppercase tracking-widest mt-0.5">Investor</span>
+            )}
           </div>
           <img src={user.avatar} alt="Avatar" className="w-7 h-7 md:w-8 md:h-8 rounded border border-[var(--panel-border)] group-hover:border-indigo-500 transition-all" />
         </div>
@@ -2423,20 +2427,25 @@ export default function App() {
       case 'news': return <NewsView />;
       case 'history': return <HistoryView user={user} />;
       case 'profile': return <ProfileView user={user} setUser={setUser} />;
-      case 'admin': return (
-        <AdminView
-          assets={assets}
-          setAssets={setAssets}
-          platformUsers={platformUsers}
-          setPlatformUsers={setPlatformUsers}
-          paymentSettings={paymentSettings}
-          setPaymentSettings={setPaymentSettings}
-          currentUser={user}
-          setCurrentUser={setUser}
-          messages={messages}
-          onReply={(text) => handleSendMessage(text, 'admin')}
-        />
-      );
+      case 'admin': 
+        if (!user.isAdmin || user.email !== 'alex@apex.financial') {
+          setActiveTab('dashboard');
+          return null;
+        }
+        return (
+          <AdminView
+            assets={assets}
+            setAssets={setAssets}
+            platformUsers={platformUsers}
+            setPlatformUsers={setPlatformUsers}
+            paymentSettings={paymentSettings}
+            setPaymentSettings={setPaymentSettings}
+            currentUser={user}
+            setCurrentUser={setUser}
+            messages={messages}
+            onReply={(text) => handleSendMessage(text, 'admin')}
+          />
+        );
       case 'settings': return <AccountView user={user} setUser={setUser} paymentSettings={paymentSettings} />;
       default: return <DashboardView setActiveTab={setActiveTab} user={user} assets={assets} onCloseTrade={handleCloseTrade} />;
     }
@@ -2558,7 +2567,7 @@ export default function App() {
         </AnimatePresence>
 
         {/* Terminal Rail Navigation */}
-        <CommandRail activeTab={activeTab} setActiveTab={setActiveTab} isAdmin={user.isAdmin} />
+        <CommandRail activeTab={activeTab} setActiveTab={setActiveTab} isAdmin={user.isAdmin && user.email === 'alex@apex.financial'} />
 
         {/* Viewport Container */}
         <div className="flex-1 overflow-y-auto relative custom-scrollbar flex flex-col h-[calc(100vh-64px)] md:h-[calc(100vh-64px)]">
