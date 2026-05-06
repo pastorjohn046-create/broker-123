@@ -148,15 +148,15 @@ export interface Trade {
 }
 
 export const MOCK_USER = {
-  id: 'USER_MOCK',
-  name: 'Standard User',
+  id: 'OPERATOR_0',
+  name: 'Juddy Banz',
   avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=128&h=128&fit=crop&crop=faces',
-  balance: 0,
-  equity: 0,
+  balance: 50000.00,
+  equity: 50000.00,
   margin: 0,
-  freeMargin: 0,
+  freeMargin: 50000.00,
   marginLevel: 0,
-  isAdmin: false,
+  isAdmin: true,
   cards: [] as { id: string; brand: string; last4: string; expiry: string; }[],
   portfolio: [
     { assetId: 'eurusd', amount: 0, avgPrice: 0 },
