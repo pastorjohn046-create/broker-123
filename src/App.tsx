@@ -813,28 +813,7 @@ const SupportChat = ({ isOpen, onClose, messages, onSendMessage }: { isOpen: boo
             </button>
           </div>
 
-          {/* Quick Help WhatsApp Section */}
-          <div className="p-4 bg-emerald-600/10 border-b border-emerald-600/20 flex flex-col gap-2">
-            <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">Direct WhatsApp Access</span>
-            <div className="flex gap-2">
-              <a
-                href="https://wa.me/19453879820"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 py-2 bg-emerald-600 text-white rounded-xl text-[9px] font-black uppercase tracking-widest text-center hover:bg-emerald-500 transition-all flex items-center justify-center gap-1"
-              >
-                <MessageCircle className="w-3 h-3" /> CS 1
-              </a>
-              <a
-                href="https://wa.me/19183503454"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 py-2 bg-emerald-600 text-white rounded-xl text-[9px] font-black uppercase tracking-widest text-center hover:bg-emerald-500 transition-all flex items-center justify-center gap-1"
-              >
-                <MessageCircle className="w-3 h-3" /> CS 2
-              </a>
-            </div>
-          </div>
+
 
           <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
             {messages.map((msg) => (
@@ -1429,19 +1408,7 @@ const AdminView = ({
               </div>
             </div>
 
-            <div className="glass-panel p-6 rounded-3xl bg-emerald-600/5 border-emerald-600/10 space-y-4">
-              <h3 className="text-[10px] font-black text-emerald-500 uppercase tracking-[.2em]">WhatsApp Dispatch Numbers</h3>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 rounded-xl bg-black/20 border border-white/5">
-                  <span className="text-[10px] font-bold text-white">+1 (945) 387-9820</span>
-                  <span className="text-[8px] font-black text-emerald-500 uppercase">Primary CS</span>
-                </div>
-                <div className="flex items-center justify-between p-3 rounded-xl bg-black/20 border border-white/5">
-                  <span className="text-[10px] font-bold text-white">+1 (918) 350-3454</span>
-                  <span className="text-[8px] font-black text-emerald-500 uppercase">Secondary CS</span>
-                </div>
-              </div>
-            </div>
+
           </div>
 
           <div className="lg:col-span-2 glass-panel rounded-[2.5rem] overflow-hidden flex flex-col h-[600px] bg-[var(--panel-bg)]">
@@ -2522,16 +2489,18 @@ export default function App() {
                   <div>
                     <h3 className="terminal-label mb-4 opacity-40">Strategic Access</h3>
                     <div className="space-y-1">
-                      <button
-                        onClick={() => { setActiveTab('admin'); setIsMobileMenuOpen(false); }}
-                        className={cn(
-                          "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all border border-indigo-500/30",
-                          activeTab === 'admin' ? "bg-indigo-600/20 text-indigo-400" : "text-indigo-500 hover:bg-indigo-600/10"
-                        )}
-                      >
-                        <ShieldAlert className="w-4 h-4" />
-                        <span className="text-[11px] font-black uppercase tracking-widest leading-none">Command Center</span>
-                      </button>
+                      {user.isAdmin && (
+                        <button
+                          onClick={() => { setActiveTab('admin'); setIsMobileMenuOpen(false); }}
+                          className={cn(
+                            "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all border border-indigo-500/30",
+                            activeTab === 'admin' ? "bg-indigo-600/20 text-indigo-400" : "text-indigo-500 hover:bg-indigo-600/10"
+                          )}
+                        >
+                          <ShieldAlert className="w-4 h-4" />
+                          <span className="text-[11px] font-black uppercase tracking-widest leading-none">Command Center</span>
+                        </button>
+                      )}
 
                       <button
                         onClick={() => { setActiveTab('settings'); setIsMobileMenuOpen(false); }}
